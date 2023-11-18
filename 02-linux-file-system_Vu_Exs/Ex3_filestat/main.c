@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <libgen.h>
 #include <time.h>
+#include <unistd.h>
 
 #define FILE_NAME "test_file"
 
@@ -43,5 +44,6 @@ int main (void)
     printf("Last status change    : %s\n", ctime(&fileStat.st_mtim.tv_sec));
     printf("Last file modification: %s\n", ctime(&fileStat.st_ctim.tv_sec));
     
+    close(fileDescriptor);
     return 1;
 }
