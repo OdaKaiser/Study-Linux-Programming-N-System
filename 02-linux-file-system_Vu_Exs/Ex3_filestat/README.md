@@ -2,8 +2,8 @@ This is README file for Ex3
 Author: Phan Tuan Vu
 
 *Make usage:
-make all : to build all the exec excutable file
-make clean: remove exec excutable file
+- make all : to build all the exec excutable file
+- make clean: remove exec excutable file
 
 *Codes explaination:
 - Creating an open file descriptor with open and O_CREAT flag to create the file if it doesn't exist
