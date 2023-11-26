@@ -15,7 +15,7 @@ int main (void)
     stat(file, &fileStat);
 
     int fileDescriptor = open(FILE_NAME, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR| S_IXUSR);
-    if (fileDescriptor > -1 )
+    if (fileDescriptor > -1)
     {
         write(fileDescriptor, "Data", 4);
     }
