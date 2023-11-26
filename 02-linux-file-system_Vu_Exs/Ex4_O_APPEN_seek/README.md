@@ -12,5 +12,5 @@ it doesn't override the last written data of the file
 - The reason:
     The open file descriptor was created by the O_APPEND flag means the 
     offset always positions at the end of the last write() operation 
-    regardless of the lseek() was for the offset to the beginning 
+    regardless of the lseek() set the offset to the beginning 
     of the file

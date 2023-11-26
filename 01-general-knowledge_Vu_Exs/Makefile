@@ -19,10 +19,10 @@ mk_objs:
 	$(CC) -c -fPIC $(SRC_DIR)/foo.c  -o $(OBJS_DIR)/foo.o
 	$(CC) -c -fPIC $(SRC_DIR)/bar.c  -o $(OBJS_DIR)/bar.o
 
-mk_shared:
+mk_shared: mk_objs
 	$(CC) -shared $(OBJS_DIR)/foo.o $(OBJS_DIR)/bar.o -o $(LIB_SHARE)/$(LIB_SHARD_NAME)
 
-mk_static:
+mk_static: mk_objs
 	ar -rcs $(LIB_STATIC)/$(LIB_STATIC_NAME) $(OBJS_DIR)/foo.o $(OBJS_DIR)/bar.o
 
 install: all
