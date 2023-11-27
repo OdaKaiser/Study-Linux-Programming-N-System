@@ -1,0 +1,1 @@
+void digitalClock (void);
