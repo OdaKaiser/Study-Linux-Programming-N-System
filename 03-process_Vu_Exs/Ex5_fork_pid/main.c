@@ -8,12 +8,12 @@ int main(void)
 {
     pid_t child_pid;
     child_pid = fork();
-    if (child_pid >0)
+    if (child_pid >= 0)
     {
         if (child_pid == 0)
         {
             printf("This is child process running digital clock \n");
-            printf("Child process ID is: %d\n Parent process ID is: %d", getpid(),getppid());
+            printf("Child process ID is: %d\n Parent process ID is: %d", getpid(), getppid());
             digitalClock();
         }
         else
@@ -24,8 +24,7 @@ int main(void)
     } 
     else 
     {
-        printf("fork() error: return -1");
+        printf("fork() error return -1");
     }
-    
     return 0;
 }
