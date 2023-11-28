@@ -17,6 +17,8 @@ void digitalClock(void)
     {
         // print to stdout each seccond and clear stdout
         system("clear");
+        printf("This is child process running digital clock \n");
+        printf("Child process ID is: %d\nParent process ID is: %d", getpid(), getppid());
         printf("--DIGITALCLOCK--\n");
         printf("|--|%02d:%02d:%02d|--|\n",hour,min,sec);
         printf("----------------\n");
