@@ -12,19 +12,17 @@ int main(void)
     {
         if (child_pid == 0)
         {
-            printf("This is child process running digital clock \n");
-            printf("Child process ID is: %d\n Parent process ID is: %d", getpid(), getppid());
-            digitalClock();
+                digitalClock();  
         }
         else
         {
-            printf("This is prent process\n");
+            printf("This is parent process\n");
             printf("Process ID is: %d", getpid());
         }
     } 
     else 
     {
-        printf("fork() error return -1");
+        printf("fork() error return -1\n");
     }
     return 0;
 }

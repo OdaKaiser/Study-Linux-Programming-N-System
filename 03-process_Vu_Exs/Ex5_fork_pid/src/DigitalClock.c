@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include<stdlib.h>
 
-void digitalClock()
+void digitalClock(void)
 {
     //get current system time assign to 3 int variables 
     time_t time_tPointer = time(NULL); //struct tm localtime use *time_t
