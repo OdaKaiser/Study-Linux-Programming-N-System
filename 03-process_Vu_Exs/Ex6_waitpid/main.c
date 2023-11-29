@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     int i;
     if (argc != 2)
     {
-        printf("Not a valid argument!\nUsage ./main <int number> <w/wpd>\n");
+        printf("Not a valid argument!\nUsage ./main <int number>\n");
         printf("Arg = <number> to terminarted child process after <number> secconds\n");
         exit(1);
     }
