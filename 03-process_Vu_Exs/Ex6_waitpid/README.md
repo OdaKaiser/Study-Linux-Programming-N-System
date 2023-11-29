@@ -6,6 +6,7 @@ Author: Phan Tuan Vu
 - make clean: remove exec excutable file
 - ./main <number>  (number > 0). Wrong args, usage will be printed to stdout
 - Comment 1 of 3 blocks in code to see effect
+
 *Codes explaination:
 - main.c: using fork() to make a child process from a parent process and check for error
   + Child process: print pid and ppid
