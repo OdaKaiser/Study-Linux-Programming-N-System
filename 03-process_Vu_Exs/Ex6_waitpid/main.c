@@ -8,7 +8,6 @@
 int main(int argc, char *argv[])
 {
 
-    
     //process the user input check for invalid arguments
     int i;
     if (argc != 2)
