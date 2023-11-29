@@ -4,34 +4,95 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int main(void)
+
+int main(int argc, char *argv[])
 {
+
+    
+    //process the user input check for invalid arguments
+    int i;
+    if (argc != 2)
+    {
+        printf("Not a valid argument!\nUsage ./main <int number> <w/wpd>\n");
+        printf("Arg = <number> to terminarted child process after <number> secconds\n");
+        exit(1);
+    }
+    else if(argc > 2 || argc < 2) 
+    {
+       printf("Too many or few arguments supplied.\n"); 
+       exit(1);
+    }
+    else
+    {
+        i = atoi(argv[1]);
+        if ( i <= 0 )
+        {
+            printf("Not a valid argument (>=0).\n"); // non negative number make program hang 
+            exit(1);
+        }
+    }
+
+    //fork the parent process
     pid_t child_pid;
     int waitPid, waitStatus; 
-
     child_pid = fork();
     if (child_pid >= 0)
     {
-        if (child_pid == 0)
+        if (child_pid == 0) //child process
         {
-            printf("This is child process\n");
+            printf("This is Child process\n");
             printf("Process ID is: %d\nParent process ID is: %d\n", getpid(), getppid());   
-            //while(1);//comment here to see the differences and keep  wait(&waitStatus); to see the differences           
+            if (i != 0)
+            {
+                do
+                {
+                    printf("Child process will terminated in %d sec\n", i); // get second from 2nd argument 
+                    i--;
+                    sleep(1);
+                } while (i > 0);
+
+                if (i == 0)
+                {
+                    exit(1);
+                }
+            }
         }
-        else
+        else //parent process
         {         
-            printf("This is parent process\n");
+            printf("This is Parent process\n");
             printf("Process ID is: %d\n", getpid());
             
-            wait(&waitStatus); //comment here to see the differences
-            if(waitpid(child_pid, &waitStatus, 0) == -1) // waitpid return -1 when parent process successfully wait() 
+            //comment 1 block and keep 2 blocks to see result
+            /*BLOCK 1*/ 
+            if(waitpid(child_pid, &waitStatus, 0) == -1) // waitpid() return -1 when error
             {
-                printf("wait() successful\n");
+                printf("wait_pid() Unsuccessful\n");
             }
             else
             {
-                printf("Child process is remain with pid: %d \n", child_pid);
+                printf("Parent waits for Child process Succesfully (pid: %d)\n", child_pid);
             }
+
+            /*BLOCK 2*/
+            if(wait(&waitStatus) == -1) // wait() return -1 when error
+            {
+                printf("wait() Unsuccessful\n");
+            }
+            else
+            {
+                printf("Parent waits for Child process Succesfully (pid: %d)\n", child_pid);
+            }
+            
+            /*BLOCK 3*/
+            if(waitpid(child_pid, &waitStatus, 0) == -1) // waitpid() return -1 when error
+            {
+                printf("wait_pid() Unsuccessful\n");
+            }
+            else
+            {
+                printf("Parent waits for Child process Succesfully (pid: %d)\n", child_pid);
+            }
+
         }
     } 
     else 
