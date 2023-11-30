@@ -3,7 +3,7 @@
 CC := gcc
 
 all: 
-	$(CC) -o ./src/DigitalClock.c main.c -o exec
+	$(CC) ./main.c ./src/DigitalClock.c -o exec
 
 clean:
 	rm -rf exec
