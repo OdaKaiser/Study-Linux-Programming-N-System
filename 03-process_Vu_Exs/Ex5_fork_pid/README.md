@@ -4,6 +4,7 @@ Author: Phan Tuan Vu
 *Make usage:
 - make all : to build main.c and DigitalClock.c link them to an excutable file
 - make clean: remove exec excutable file
+- ./main to run clock. To turn off, open another termial, use ps -aux | grep "./main" and kill the excutable process
 
 *Codes explaination:
 - DigitalClock.c: this is a program intented for child process to run 
