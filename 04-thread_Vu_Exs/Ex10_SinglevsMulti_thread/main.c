@@ -8,7 +8,7 @@
 void *createFile(int maxcount)
 {
     char databuffer[100]; 
-    int fileDescriptor = open("a.txt", O_RDWR | O_CREAT, 0667);
+    int fileDescriptor = open("a.txt", O_APPEND |O_RDWR | O_CREAT, 0667);
 
     if (fileDescriptor < -1)
     {
@@ -65,10 +65,11 @@ int main(int argc, char *argv[])
         clock_t start = clock(); //start timer
 
         printf("Run createFile with 2 thread: In thread 1 ...\n");
-        pthread_create(&thread_id1, NULL, &createFile, (int*)5000000); 
-        printf("Run createFile with 2 thread: In thread 2 ...\n");
-        pthread_create(&thread_id2, NULL, &createFile, (int*)5000000); 
+        pthread_create(&thread_id1, NULL, &createFile, (int*)500000); 
         pthread_join(thread_id1,NULL);
+
+        printf("Run createFile with 2 thread: In thread 2 ...\n");
+        pthread_create(&thread_id2, NULL, &createFile, (int*)500000); 
         pthread_join(thread_id2,NULL);
 
         clock_t end = clock(); //end timer
