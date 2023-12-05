@@ -9,9 +9,9 @@ Author: Phan Tuan Vu
   + 2: do the same but with 2 thread
 
 *Codes explaination:
-  -Remember to add flag -pthread to Makefile when compling code with thread
-  -The function createFile(int maxcount) is use for thread func (3rd parametter of pthread_create()) will create a file name a.txt and write maxcount number to each line
-  -When use 1 thread (./main 1) the program completed after only ~ 3 seccond.
-  -When use 2 thread to do the same task (./main 2) the program completed after over ~ 35 seconds
+  - Remember to add flag -pthread to Makefile when compling code with thread
+  - The function createFile(int maxcount) is use for thread func (3rd parametter of pthread_create()) will create a file name a.txt and write maxcount number to each line
+  - When use 1 thread (./main 1) the program completed after only ~ 3 seccond.
+  - When use 2 thread to do the same task (./main 2) the program completed after over ~ 35 seconds
  
   => Multi-threading help us manipulate the time using the resource, prevent time lost or waste but not the time taken to do some specific task like this example. 
