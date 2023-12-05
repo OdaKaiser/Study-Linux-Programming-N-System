@@ -46,39 +46,44 @@ int main(int argc, char *argv[])
         printf("Option is : %d\n", option);
     }
     // 1 for 1 thread 2 for 2 thread
-    if (option == 1)
+    switch (option)
     {
-        pthread_t thread_id; 
-        printf("Run createFile with 1 thread...\n");
-        clock_t start = clock(); //start timer
-        
-        pthread_create(&thread_id, NULL, &createFile, (int*)1000000);
-        pthread_join(thread_id,NULL); 
+        case 1:
+        {
+            pthread_t thread_id; 
+            printf("Run createFile with 1 thread...\n");
+            clock_t start = clock(); //start timer
+            
+            pthread_create(&thread_id, NULL, &createFile, (int*)1000000);
+            pthread_join(thread_id,NULL); 
 
-        clock_t end = clock(); //end timer
-        printf("Time taken: %f \n", (double)(end - start)/CLOCKS_PER_SEC); //cal time taken
+            clock_t end = clock(); //end timer
+            printf("Time taken: %f \n", (double)(end - start)/CLOCKS_PER_SEC); //cal time taken
+            break;
+        }
+        case 2:
+        {
+            pthread_t thread_id1, thread_id2; 
+            printf("Run createFile with 2 thread...\n");
+            clock_t start = clock(); //start timer
+
+            printf("Run createFile with 2 thread: In thread 1 ...\n");
+            pthread_create(&thread_id1, NULL, &createFile, (int*)500000); 
+            pthread_join(thread_id1,NULL);
+
+            printf("Run createFile with 2 thread: In thread 2 ...\n");
+            pthread_create(&thread_id2, NULL, &createFile, (int*)500000); 
+            pthread_join(thread_id2,NULL);
+
+            clock_t end = clock(); //end timer
+            printf("Time taken: %f \n", (double)(end - start)/CLOCKS_PER_SEC); //cal time taken
+            break;
+        }
+        default:
+        {
+            printf("Not a valid argument!\n"); //check arg is not valid
+            exit(1);
+        }
+        return 0;
     }
-    else if (option == 2)
-    {
-        pthread_t thread_id1, thread_id2; 
-        printf("Run createFile with 2 thread...\n");
-        clock_t start = clock(); //start timer
-
-        printf("Run createFile with 2 thread: In thread 1 ...\n");
-        pthread_create(&thread_id1, NULL, &createFile, (int*)500000); 
-        pthread_join(thread_id1,NULL);
-
-        printf("Run createFile with 2 thread: In thread 2 ...\n");
-        pthread_create(&thread_id2, NULL, &createFile, (int*)500000); 
-        pthread_join(thread_id2,NULL);
-
-        clock_t end = clock(); //end timer
-        printf("Time taken: %f \n", (double)(end - start)/CLOCKS_PER_SEC); //cal time taken
-    }
-    else
-    {
-        printf("Not a valid argument!\n"); //check arg is not valid
-        exit(1);
-    }
-    return 0;
 }
