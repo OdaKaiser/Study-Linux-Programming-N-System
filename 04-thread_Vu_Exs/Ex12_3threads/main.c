@@ -25,35 +25,35 @@ void *func_StdInputHanler(void *infoPrecast)
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
     char charBirthYear[10];
 
-            printf("This is thread 1 ID: %ld\n", ctid);
-            printf("This is thread 1 is obtaning data from stdin... \n");
-            printf("Input your name: \n");
-            fgets(infoData->Name, sizeof(infoData->Name),stdin);
-            printf("Input your YoB: \n");
-            fgets(charBirthYear, sizeof(charBirthYear),stdin);
-            infoData->YofBirth = atoi(charBirthYear);
-            printf("Input your Phone Number: \n");
-            fgets(infoData->PhoneNumber, sizeof(infoData->PhoneNumber),stdin);
-            printf("Input your Birth Place: \n");
-            fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
+    printf("This is thread 1 ID: %ld\n", ctid);
+    printf("This is thread 1 is obtaning data from stdin... \n");
+    printf("Input your name: \n");
+    fgets(infoData->Name, sizeof(infoData->Name),stdin);
+    printf("Input your YoB: \n");
+    fgets(charBirthYear, sizeof(charBirthYear),stdin);
+    infoData->YofBirth = atoi(charBirthYear);
+    printf("Input your Phone Number: \n");
+    fgets(infoData->PhoneNumber, sizeof(infoData->PhoneNumber),stdin);
+    printf("Input your Birth Place: \n");
+    fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
 
     pthread_mutex_unlock(&lock);
 }
 
-void *func_StdoutputHanler(void *infoPrecast)
+void *func_StdOutputHanler(void *infoPrecast)
 {
     pthread_mutex_lock(&lock);
     pthread_t ctid = pthread_self();
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
 
-            printf("This is thread 2 ID: %ld\n", ctid);
-            printf("This is thread 2 is printing data to stdout... \n");
-            printf("Your name is: %s\n", infoData->Name);
-            printf("Your YoB is: %d\n", infoData->YofBirth);
-            printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
-            printf("Your Birth Place is: %s\n", infoData->BirthPlace);
-
+    printf("This is thread 2 ID: %ld\n", ctid);
+    printf("This is thread 2 is printing data to stdout... \n");
+    printf("Your name is: %s\n", infoData->Name);
+    printf("Your YoB is: %d\n", infoData->YofBirth);
+    printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
+    printf("Your Birth Place is: %s\n", infoData->BirthPlace);
     pthread_mutex_unlock(&lock);
+
 }
 
 void *func_FileStreamHander(void *infoPrecast)
@@ -62,23 +62,24 @@ void *func_FileStreamHander(void *infoPrecast)
     pthread_t ctid = pthread_self();
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
 
-            printf("This is thread 3 ID: %ld\n", ctid);
-            printf("This is thread 3 is writing data to file...\n");
-            int fileDescriptor = open(FILE_NAME, O_CREAT | O_RDWR | O_TRUNC, 0666);
-            if (fileDescriptor > -1)
-            {
-                char charBirthYear[10]; 
-                write(fileDescriptor, infoData->Name, strlen(infoData->Name));
-                sprintf(charBirthYear,"%d", infoData->YofBirth);
-                write(fileDescriptor, charBirthYear, strlen(charBirthYear));
-                write(fileDescriptor, "\n", 1);
-                write(fileDescriptor, infoData->PhoneNumber, strlen(infoData->PhoneNumber));
-                write(fileDescriptor, infoData->BirthPlace, strlen(infoData->BirthPlace));
-            } 
-            else
-            {
-                printf("Open file \"%s\" error!\n", FILE_NAME);
-            }
+        printf("This is thread 3 ID: %ld\n", ctid);
+        printf("This is thread 3 is writing data to file...\n");
+        int fileDescriptor = open(FILE_NAME, O_APPEND | O_CREAT | O_RDWR | O_TRUNC, 0666);
+        if (fileDescriptor > -1)
+        {
+            char charBirthYear[10]; 
+            write(fileDescriptor, infoData->Name, strlen(infoData->Name));
+            sprintf(charBirthYear,"%d", infoData->YofBirth);
+            write(fileDescriptor, charBirthYear, strlen(charBirthYear));
+            write(fileDescriptor, "\n", 1);
+            write(fileDescriptor, infoData->PhoneNumber, strlen(infoData->PhoneNumber));
+            write(fileDescriptor, infoData->BirthPlace, strlen(infoData->BirthPlace));
+            write(fileDescriptor, "------", 6);
+        } 
+        else
+        {
+            printf("Open file \"%s\" error!\n", FILE_NAME);
+        }
 
     pthread_mutex_unlock(&lock);
 }
@@ -87,16 +88,20 @@ int main(void)
 {
     //init data 
     PersonalInfo VuInfo;
-    //start thread1
+
     if (pthread_mutex_init(&lock, NULL) != 0)
     {
         printf("Mutex init failed\n");
         exit(1);
     }
 
-    pthread_create(&thread_1, NULL, &func_StdInputHanler, &VuInfo);
-    pthread_create(&thread_2, NULL, &func_StdoutputHanler, &VuInfo);
-    pthread_create(&thread_3, NULL, &func_FileStreamHander, &VuInfo);
+    while (1)
+    {
+        pthread_create(&thread_1, NULL, &func_StdInputHanler, &VuInfo);
+        pthread_create(&thread_2, NULL, &func_StdOutputHanler, &VuInfo);
+        pthread_create(&thread_3, NULL, &func_FileStreamHander, &VuInfo);
+        printf ("Continue with other student infos\n"); 
+    }
     
     pthread_join(thread_1, NULL);
     pthread_join(thread_2, NULL);

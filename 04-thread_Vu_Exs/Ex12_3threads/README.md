@@ -5,11 +5,6 @@ Author: Phan Tuan Vu
 - make all : to build main.c to an excutable file
 - make clean: remove exec excutable file 
 - ./main 
-*Codes explaination:
-  - Read the comments in main.c
 
+*NOT COMPLETED, code logic is compromise 
 
-pthread_mutex_init
-pthread_mutex_lock
-pthread_mutex_unlock
-pthread_mutex_destroy
