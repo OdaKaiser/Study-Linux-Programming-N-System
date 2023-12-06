@@ -41,8 +41,7 @@ int main()
 
     sigemptyset(&block_mask);
     sigemptyset(&current_mask);
-    sigprocmask(SIG_BLOCK, &block_mask, NULL);
-    sigaddset(&block_mask,S IG_IGN);
+    sigprocmask(SIG_BLOCK, NULL, &block_mask);
 
     if (sigprocmask(SIG_SETMASK, &block_mask, &current_mask) == 0)
     {
