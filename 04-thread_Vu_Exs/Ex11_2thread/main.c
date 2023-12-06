@@ -22,6 +22,7 @@ void *threadHandler(void *infoPrecast)
     if (pthread_equal(tid, thread_id1)) //condition for thread_id1 
     {
         printf("This is thread 1 ID: %ld\n", tid);
+        sleep(1);
     }
     else if (pthread_equal(tid, thread_id2)) //condition for thread_id1 
     {
@@ -36,10 +37,11 @@ int main(void)
     PersonalInfo VuInfo = {"VU", 1997, "0987654321", "Nam Dinh"};
     //start thread1
     pthread_create(&thread_id1, NULL, &threadHandler, &VuInfo);
-    sleep(1);   
     //start thread2
     pthread_create(&thread_id2, NULL, &threadHandler, &VuInfo);
-    sleep(3); 
+    //terminated all threads
+    pthread_join(thread_id1, NULL);
+    pthread_join(thread_id2, NULL);
     
     return 0;
 }

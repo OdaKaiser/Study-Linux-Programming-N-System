@@ -2,16 +2,23 @@
 #include <signal.h>
 #include <stdlib.h>
 
-void sigHandlerSigUsr1()
+void sigHandlerSigUsr(int signum)
 {
-    printf("I'm SIGUSR 1\n!");
-    printf("He he he \n!");
-}
-
-void sigHandlerSigUsr2()
-{
-    printf("I'm SIGUSR 2\n!");
-    printf("Hi hi hi \n!");
+    if (SIGUSR1 == signum )
+    {
+        printf("I'm SIGUSR 1\n!");
+        printf("He he he \n!");
+    }
+    else if (SIGUSR2 == signum)
+    {
+        printf("I'm SIGUSR 2\n!");
+        printf("Hi hi hi \n!");
+    }
+    else
+    {
+        printf("Error when Triger action for SIGUSR1/SIGUSR2\n");
+        exit(1);
+    }
 }
 
 void sigHandlerSigInt()
@@ -21,9 +28,14 @@ void sigHandlerSigInt()
 
 int main()
 {
-    signal(SIGINT, sigHandlerSigInt);
-    signal(SIGUSR1, sigHandlerSigUsr1);
-    signal(SIGUSR2, sigHandlerSigUsr2);
+    if (signal(SIGINT, sigHandlerSigInt) == SIG_ERR)
+    {
+        printf("Error when register action for SIGINT\n");
+        exit(1);
+    }
+    signal(SIGUSR1, sigHandlerSigUsr);  
+    signal(SIGUSR2, sigHandlerSigUsr);
+
     while(1);
     return 0;
 }
