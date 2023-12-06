@@ -23,13 +23,20 @@ void *func_StdInputHanler(void *infoPrecast)
     pthread_mutex_lock(&lock);
     pthread_t ctid = pthread_self();
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-    if (pthread_equal(ctid, thread_1)) //condition for thread_id1 
-        {
+    char charBirthYear[10];
+
             printf("This is thread 1 ID: %ld\n", ctid);
             printf("This is thread 1 is obtaning data from stdin... \n");
             printf("Input your name: \n");
             fgets(infoData->Name, sizeof(infoData->Name),stdin);
-        }
+            printf("Input your YoB: \n");
+            fgets(charBirthYear, sizeof(charBirthYear),stdin);
+            infoData->YofBirth = atoi(charBirthYear);
+            printf("Input your Phone Number: \n");
+            fgets(infoData->PhoneNumber, sizeof(infoData->PhoneNumber),stdin);
+            printf("Input your Birth Place: \n");
+            fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
+
     pthread_mutex_unlock(&lock);
 }
 
@@ -38,12 +45,14 @@ void *func_StdoutputHanler(void *infoPrecast)
     pthread_mutex_lock(&lock);
     pthread_t ctid = pthread_self();
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-    if (pthread_equal(ctid, thread_2)) //condition for thread_id1 
-        {
+
             printf("This is thread 2 ID: %ld\n", ctid);
             printf("This is thread 2 is printing data to stdout... \n");
-            printf("You name is: %s\n", infoData->Name);
-        }
+            printf("Your name is: %s\n", infoData->Name);
+            printf("Your YoB is: %d\n", infoData->YofBirth);
+            printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
+            printf("Your Birth Place is: %s\n", infoData->BirthPlace);
+
     pthread_mutex_unlock(&lock);
 }
 
@@ -52,21 +61,25 @@ void *func_FileStreamHander(void *infoPrecast)
     pthread_mutex_lock(&lock);
     pthread_t ctid = pthread_self();
     PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-    if (pthread_equal(ctid, thread_3)) //condition for thread_id1 
-        {
+
             printf("This is thread 3 ID: %ld\n", ctid);
             printf("This is thread 3 is writing data to file...\n");
             int fileDescriptor = open(FILE_NAME, O_CREAT | O_RDWR | O_TRUNC, 0666);
             if (fileDescriptor > -1)
             {
+                char charBirthYear[10]; 
                 write(fileDescriptor, infoData->Name, strlen(infoData->Name));
+                sprintf(charBirthYear,"%d", infoData->YofBirth);
+                write(fileDescriptor, charBirthYear, strlen(charBirthYear));
                 write(fileDescriptor, "\n", 1);
+                write(fileDescriptor, infoData->PhoneNumber, strlen(infoData->PhoneNumber));
+                write(fileDescriptor, infoData->BirthPlace, strlen(infoData->BirthPlace));
             } 
             else
             {
                 printf("Open file \"%s\" error!\n", FILE_NAME);
             }
-        }
+
     pthread_mutex_unlock(&lock);
 }
 
