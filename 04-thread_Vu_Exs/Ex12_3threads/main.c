@@ -98,7 +98,7 @@ void *func_FileStreamHander(void *infoPrecast)
 
         while (condition_Var != 3)
         {
-            pthread_cond_wait(&condition, &lock); / sleep to make sure this while loop catch the signal
+            pthread_cond_wait(&condition, &lock); // sleep to make sure this while loop catch the signal
             sleep(2);
         }
 
