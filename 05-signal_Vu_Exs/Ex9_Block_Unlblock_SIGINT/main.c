@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
-
 void sigHandlerSigUsr(int signum)
 {
     if (SIGUSR1 == signum )
@@ -26,37 +24,48 @@ void sigHandlerSigUsr(int signum)
 
 void sigHandlerSigInt()
 {
+    printf("I'm SIGINT\n!");
     printf("Ha ha ha \n!");
 }
 
 int main()
-{
-    sigset_t block_mask, current_mask;
-
+{   
     if (signal(SIGINT, sigHandlerSigInt) == SIG_ERR)
     {
         printf("Error when register action for SIGINT\n");
         exit(1);
     }
-
+    //making a mask to block/ unblock signal
+    sigset_t block_mask;
     sigemptyset(&block_mask);
-    sigemptyset(&current_mask);
-    sigprocmask(SIG_BLOCK, NULL, &block_mask);
-
-    if (sigprocmask(SIG_SETMASK, &block_mask, &current_mask) == 0)
+    sigaddset(&block_mask, SIGINT);
+    //blocking SIGINT
+    if (sigprocmask(SIG_BLOCK, &block_mask, NULL) == 0)
     {
-        if (sigismember(&block_mask, SIG_IGN) == 1)
+        printf("Blocking SIGINT\n");  
+        if (sigismember(&block_mask, SIGINT) == 1)
         {
-            printf("SIGINT exist, unblock signal\n");
+            printf("SIGINT is blocked!\n");
+            sleep(5); 
         }
-        else if (sigismember(&block_mask, SIG_IGN) == 0)
+    }
+    if (sigprocmask(SIG_UNBLOCK, &block_mask, NULL) == 0)
+    {
+        printf("Unblocking SIGINT\n");  
+        if (sigismember(&block_mask, SIGINT) == 1)
         {
-            printf("SIGINT does not exist, blocked signal\n");
+            printf("SIGINT is unblocked!\n");
+            sleep(3); 
         }
     }
 
-    signal(SIGUSR1, sigHandlerSigUsr);  
+    signal(SIGUSR1, sigHandlerSigUsr);
+    kill(getpid(),SIGUSR1);
+    sleep(1); 
+
     signal(SIGUSR2, sigHandlerSigUsr);
+    kill(getpid(),SIGUSR2);
+    sleep(1); 
 
     while(1);
     return 0;

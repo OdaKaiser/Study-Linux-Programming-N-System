@@ -23,6 +23,7 @@ void sigHandlerSigUsr(int signum)
 
 void sigHandlerSigInt()
 {
+    printf("I'm SIGINT\n!");
     printf("Ha ha ha \n!");
 }
 
@@ -33,9 +34,13 @@ int main()
         printf("Error when register action for SIGINT\n");
         exit(1);
     }
-    signal(SIGUSR1, sigHandlerSigUsr);  
-    signal(SIGUSR2, sigHandlerSigUsr);
+    kill(getpid(),SIGINT); 
 
-    while(1);
+    signal(SIGUSR1, sigHandlerSigUsr);
+    kill(getpid(),SIGUSR1);
+
+    signal(SIGUSR2, sigHandlerSigUsr);
+    kill(getpid(),SIGUSR2);
+    
     return 0;
 }
