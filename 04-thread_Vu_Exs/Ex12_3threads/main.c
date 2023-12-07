@@ -94,12 +94,12 @@ void *func_FileStreamHander(void *infoPrecast)
     while (1)
     {
         pthread_mutex_lock(&lock); //lock critical section
-        pthread_t ctid = pthread_self(); //wait for other threads send signal mutex and condition are released 
+        pthread_t ctid = pthread_self();  
 
         while (condition_Var != 3)
         {
-            pthread_cond_wait(&condition, &lock); // sleep to make sure this while loop catch the signal
-            sleep(2);
+            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released
+            sleep(2); // sleep to make sure this while loop catch the signal
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
