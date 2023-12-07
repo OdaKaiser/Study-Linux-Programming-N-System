@@ -8,7 +8,7 @@ Author: Phan Tuan Vu
 - Input to terminal then wait. 
 
 *Codes explaination:
--func_StdInputHanler for thread 1 
--func_StdOutputHanler for thread 2
--func_FileStreamHander for thread 3
--Read comment in code for details
+- func_StdInputHanler for thread 1 
+- func_StdOutputHanler for thread 2
+- func_FileStreamHander for thread 3
+- Read comment in code for details
