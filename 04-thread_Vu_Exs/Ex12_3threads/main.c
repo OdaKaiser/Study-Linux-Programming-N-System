@@ -32,11 +32,9 @@ void *func_StdInputHanler(void *infoPrecast)
         {
             pthread_cond_wait(&condition, &lock);
         } 
-
         
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-        char charBirthYear[10];
-        
+        char charBirthYear[10];       
         printf("This is thread 1 ID: %ld\n", ctid);
         printf("This is thread 1 is obtaning data from stdin... \n");
         printf("Input your name: \n");
@@ -50,7 +48,7 @@ void *func_StdInputHanler(void *infoPrecast)
         fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
 
         condition_Var = 2;
-        printf("Condition Var Value: %d\n", condition_Var);
+        printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
         pthread_cond_signal(&condition);
         pthread_mutex_unlock(&lock);
     }
@@ -70,7 +68,6 @@ void *func_StdOutputHanler(void *infoPrecast)
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-
         printf("This is thread 2 ID: %ld\n", ctid);
         printf("This is thread 2 is printing data to stdout... \n");
         printf("Your name is: %s\n", infoData->Name);
@@ -79,7 +76,7 @@ void *func_StdOutputHanler(void *infoPrecast)
         printf("Your Birth Place is: %s\n", infoData->BirthPlace);
         
         condition_Var = 3;
-        printf("Condition Var Value: %d\n", condition_Var);
+        printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
         pthread_cond_signal(&condition);
         pthread_mutex_unlock(&lock);
     }
@@ -88,7 +85,6 @@ void *func_StdOutputHanler(void *infoPrecast)
 
 void *func_FileStreamHander(void *infoPrecast)
 {
-
     while (1)
     {
     pthread_mutex_lock(&lock);
@@ -100,10 +96,9 @@ void *func_FileStreamHander(void *infoPrecast)
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-
         printf("This is thread 3 ID: %ld\n", ctid);
         printf("This is thread 3 is writing data to file...\n");
-        int fileDescriptor = open(FILE_NAME, O_CREAT | O_RDWR | O_TRUNC, 0667);
+        int fileDescriptor = open(FILE_NAME, O_APPEND | O_CREAT | O_RDWR, 0666);
         if (fileDescriptor > -1)
         {
             char charBirthYear[10]; 
@@ -120,10 +115,10 @@ void *func_FileStreamHander(void *infoPrecast)
             printf("Open file \"%s\" error!\n", FILE_NAME);
         }
         close(fileDescriptor);
-        printf ("Continue with other student infos\n"); 
 
         condition_Var = 1;
-        printf("Condition Var Value: %d\n", condition_Var);
+        printf ("###########Continue with other student infos###################\n"); 
+        printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
         pthread_cond_signal(&condition);
         pthread_mutex_unlock(&lock);
     }
@@ -149,7 +144,7 @@ int main(void)
     pthread_join(thread_2, NULL);
     pthread_join(thread_3, NULL);
     
-    //pthread_mutex_destroy(&lock);
+    pthread_mutex_destroy(&lock);
 
     return 0;
 }
