@@ -9,6 +9,9 @@
 
 pthread_mutex_t lock; 
 pthread_t thread_1, thread_2, thread_3; 
+pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
+int condition_Var = 1;
+
 //define struct
 typedef struct PersonalInfo
 {
@@ -20,51 +23,87 @@ typedef struct PersonalInfo
 
 void *func_StdInputHanler(void *infoPrecast)
 {
-    pthread_mutex_lock(&lock);
-    pthread_t ctid = pthread_self();
-    PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-    char charBirthYear[10];
+    while (1)
+    {
+        pthread_mutex_lock(&lock);
+        pthread_t ctid = pthread_self();
 
-    printf("This is thread 1 ID: %ld\n", ctid);
-    printf("This is thread 1 is obtaning data from stdin... \n");
-    printf("Input your name: \n");
-    fgets(infoData->Name, sizeof(infoData->Name),stdin);
-    printf("Input your YoB: \n");
-    fgets(charBirthYear, sizeof(charBirthYear),stdin);
-    infoData->YofBirth = atoi(charBirthYear);
-    printf("Input your Phone Number: \n");
-    fgets(infoData->PhoneNumber, sizeof(infoData->PhoneNumber),stdin);
-    printf("Input your Birth Place: \n");
-    fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
+        while (condition_Var != 1)
+        {
+            pthread_cond_wait(&condition, &lock);
+        } 
 
-    pthread_mutex_unlock(&lock);
+        
+        PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
+        char charBirthYear[10];
+        
+        printf("This is thread 1 ID: %ld\n", ctid);
+        printf("This is thread 1 is obtaning data from stdin... \n");
+        printf("Input your name: \n");
+        fgets(infoData->Name, sizeof(infoData->Name),stdin);
+        printf("Input your YoB: \n");
+        fgets(charBirthYear, sizeof(charBirthYear),stdin);
+        infoData->YofBirth = atoi(charBirthYear);
+        printf("Input your Phone Number: \n");
+        fgets(infoData->PhoneNumber, sizeof(infoData->PhoneNumber),stdin);
+        printf("Input your Birth Place: \n");
+        fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
+
+        condition_Var = 2;
+        printf("Condition Var Value: %d\n", condition_Var);
+        pthread_cond_signal(&condition);
+        pthread_mutex_unlock(&lock);
+    }
+    pthread_exit(NULL);
 }
 
 void *func_StdOutputHanler(void *infoPrecast)
 {
-    pthread_mutex_lock(&lock);
-    pthread_t ctid = pthread_self();
-    PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
+    while (1)
+    {
+        pthread_mutex_lock(&lock);
+        pthread_t ctid = pthread_self();
 
-    printf("This is thread 2 ID: %ld\n", ctid);
-    printf("This is thread 2 is printing data to stdout... \n");
-    printf("Your name is: %s\n", infoData->Name);
-    printf("Your YoB is: %d\n", infoData->YofBirth);
-    printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
-    printf("Your Birth Place is: %s\n", infoData->BirthPlace);
-    pthread_mutex_unlock(&lock);
+        while (condition_Var != 2)
+        {
+            pthread_cond_wait(&condition, &lock);
+        }
 
+        PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
+
+        printf("This is thread 2 ID: %ld\n", ctid);
+        printf("This is thread 2 is printing data to stdout... \n");
+        printf("Your name is: %s\n", infoData->Name);
+        printf("Your YoB is: %d\n", infoData->YofBirth);
+        printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
+        printf("Your Birth Place is: %s\n", infoData->BirthPlace);
+        
+        condition_Var = 3;
+        printf("Condition Var Value: %d\n", condition_Var);
+        pthread_cond_signal(&condition);
+        pthread_mutex_unlock(&lock);
+    }
+    pthread_exit(NULL);
 }
 
 void *func_FileStreamHander(void *infoPrecast)
 {
+
+    while (1)
+    {
     pthread_mutex_lock(&lock);
     pthread_t ctid = pthread_self();
-    PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
+
+        while (condition_Var != 3)
+        {
+            pthread_cond_wait(&condition, &lock);
+        }
+
+        PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
 
         printf("This is thread 3 ID: %ld\n", ctid);
         printf("This is thread 3 is writing data to file...\n");
-        int fileDescriptor = open(FILE_NAME, O_APPEND | O_CREAT | O_RDWR | O_TRUNC, 0666);
+        int fileDescriptor = open(FILE_NAME, O_CREAT | O_RDWR | O_TRUNC, 0667);
         if (fileDescriptor > -1)
         {
             char charBirthYear[10]; 
@@ -80,8 +119,15 @@ void *func_FileStreamHander(void *infoPrecast)
         {
             printf("Open file \"%s\" error!\n", FILE_NAME);
         }
+        close(fileDescriptor);
+        printf ("Continue with other student infos\n"); 
 
-    pthread_mutex_unlock(&lock);
+        condition_Var = 1;
+        printf("Condition Var Value: %d\n", condition_Var);
+        pthread_cond_signal(&condition);
+        pthread_mutex_unlock(&lock);
+    }
+    pthread_exit(NULL);
 }
 
 int main(void)
@@ -94,20 +140,16 @@ int main(void)
         printf("Mutex init failed\n");
         exit(1);
     }
+ 
+    pthread_create(&thread_1, NULL, func_StdInputHanler, &VuInfo);
+    pthread_create(&thread_2, NULL, func_StdOutputHanler, &VuInfo);
+    pthread_create(&thread_3, NULL, func_FileStreamHander, &VuInfo);
 
-    while (1)
-    {
-        pthread_create(&thread_1, NULL, &func_StdInputHanler, &VuInfo);
-        pthread_create(&thread_2, NULL, &func_StdOutputHanler, &VuInfo);
-        pthread_create(&thread_3, NULL, &func_FileStreamHander, &VuInfo);
-        printf ("Continue with other student infos\n"); 
-    }
-    
     pthread_join(thread_1, NULL);
     pthread_join(thread_2, NULL);
     pthread_join(thread_3, NULL);
     
-    pthread_mutex_destroy(&lock);
-    
+    //pthread_mutex_destroy(&lock);
+
     return 0;
 }
