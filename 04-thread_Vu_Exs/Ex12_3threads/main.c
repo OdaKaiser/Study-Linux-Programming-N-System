@@ -20,21 +20,24 @@ typedef struct PersonalInfo
     char PhoneNumber[20];
     char BirthPlace[20];
 } PersonalInfo;
-
+//func for thread_1 get user stdin
 void *func_StdInputHanler(void *infoPrecast)
 {
     while (1)
     {
-        pthread_mutex_lock(&lock);
-        pthread_t ctid = pthread_self();
+        pthread_mutex_lock(&lock); //lock critical section
+        pthread_t ctid = pthread_self();\
 
         while (condition_Var != 1)
         {
-            pthread_cond_wait(&condition, &lock);
+            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released 
+            sleep(2); // sleep to make sure this while loop catch the signal
         } 
         
+        //Declare data and data helper
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
-        char charBirthYear[10];       
+        char charBirthYear[10];   
+        //thread 1 tasks    
         printf("This is thread 1 ID: %ld\n", ctid);
         printf("This is thread 1 is obtaning data from stdin... \n");
         printf("Input your name: \n");
@@ -47,6 +50,7 @@ void *func_StdInputHanler(void *infoPrecast)
         printf("Input your Birth Place: \n");
         fgets(infoData->BirthPlace, sizeof(infoData->BirthPlace),stdin);
 
+        //change condition send signal release mutex lock 
         condition_Var = 2;
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
         pthread_cond_signal(&condition);
@@ -59,12 +63,13 @@ void *func_StdOutputHanler(void *infoPrecast)
 {
     while (1)
     {
-        pthread_mutex_lock(&lock);
+        pthread_mutex_lock(&lock); //lock critical section
         pthread_t ctid = pthread_self();
 
         while (condition_Var != 2)
         {
-            pthread_cond_wait(&condition, &lock);
+            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released 
+            sleep(2); // sleep to make sure this while loop catch the signal
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
@@ -75,6 +80,7 @@ void *func_StdOutputHanler(void *infoPrecast)
         printf("Your Phone Number is: %s\n", infoData->PhoneNumber);
         printf("Your Birth Place is: %s\n", infoData->BirthPlace);
         
+        //change condition send signal release mutex lock 
         condition_Var = 3;
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
         pthread_cond_signal(&condition);
@@ -87,12 +93,13 @@ void *func_FileStreamHander(void *infoPrecast)
 {
     while (1)
     {
-    pthread_mutex_lock(&lock);
-    pthread_t ctid = pthread_self();
+        pthread_mutex_lock(&lock); //lock critical section
+        pthread_t ctid = pthread_self(); //wait for other threads send signal mutex and condition are released 
 
         while (condition_Var != 3)
         {
-            pthread_cond_wait(&condition, &lock);
+            pthread_cond_wait(&condition, &lock); / sleep to make sure this while loop catch the signal
+            sleep(2);
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
@@ -116,6 +123,7 @@ void *func_FileStreamHander(void *infoPrecast)
         }
         close(fileDescriptor);
 
+        //change condition send signal release mutex lock 
         condition_Var = 1;
         printf ("###########Continue with other student infos###################\n"); 
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
@@ -135,11 +143,11 @@ int main(void)
         printf("Mutex init failed\n");
         exit(1);
     }
- 
+    //create threads with arg stuct PersonalInfo
     pthread_create(&thread_1, NULL, func_StdInputHanler, &VuInfo);
     pthread_create(&thread_2, NULL, func_StdOutputHanler, &VuInfo);
     pthread_create(&thread_3, NULL, func_FileStreamHander, &VuInfo);
-
+    //call thread to join
     pthread_join(thread_1, NULL);
     pthread_join(thread_2, NULL);
     pthread_join(thread_3, NULL);
