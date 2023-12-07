@@ -36,11 +36,19 @@ int main()
     }
     kill(getpid(),SIGINT); 
 
-    signal(SIGUSR1, sigHandlerSigUsr);
+    if (signal(SIGUSR1, sigHandlerSigUsr); == SIG_ERR)
+    {
+        printf("Error when register action for SIGUSR1\n");
+        exit(1);
+    }
     kill(getpid(),SIGUSR1);
-
-    signal(SIGUSR2, sigHandlerSigUsr);
-    kill(getpid(),SIGUSR2);
     
+    if (signal(SIGUSR2, sigHandlerSigUsr); == SIG_ERR)
+    {
+        printf("Error when register action for SIGUSR2\n");
+        exit(1);
+    }
+    
+    kill(getpid(),SIGUSR2);
     return 0;
 }
