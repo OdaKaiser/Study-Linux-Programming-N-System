@@ -144,7 +144,5 @@ int main(void)
     pthread_join(thread_2, NULL);
     pthread_join(thread_3, NULL);
     
-    pthread_mutex_destroy(&lock);
-
     return 0;
 }
