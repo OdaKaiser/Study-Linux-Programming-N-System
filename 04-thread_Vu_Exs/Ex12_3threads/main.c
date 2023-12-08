@@ -26,7 +26,7 @@ void *func_StdInputHanler(void *infoPrecast)
     while (1)
     {
         pthread_mutex_lock(&lock); //lock critical section
-        pthread_t ctid = pthread_self();\
+        pthread_t ctid = pthread_self();
 
         while (condition_Var != 1)
         {
