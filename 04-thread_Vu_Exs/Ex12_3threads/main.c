@@ -7,9 +7,9 @@
 
 #define FILE_NAME "information.txt"
 
-pthread_mutex_t lock; 
+pthread_mutex_t mutex_lock; 
 pthread_t thread_1, thread_2, thread_3; 
-pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
+pthread_cond_t pthread_condition = PTHREAD_COND_INITIALIZER;
 int condition_Var = 1;
 
 //define struct
@@ -25,12 +25,12 @@ void *func_StdInputHanler(void *infoPrecast)
 {
     while (1)
     {
-        pthread_mutex_lock(&lock); //lock critical section
-        pthread_t ctid = pthread_self();\
+        pthread_mutex_lock(&mutex_lock); //lock critical section
+        pthread_t ctid = pthread_self();
 
         while (condition_Var != 1)
         {
-            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released 
+            pthread_cond_wait(&pthread_condition, &mutex_lock); //wait for other threads send signal mutex and condition are released 
             sleep(2); // sleep to make sure this while loop catch the signal
         } 
         
@@ -53,8 +53,8 @@ void *func_StdInputHanler(void *infoPrecast)
         //change condition send signal release mutex lock 
         condition_Var = 2;
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
-        pthread_cond_signal(&condition);
-        pthread_mutex_unlock(&lock);
+        pthread_cond_signal(&pthread_condition);
+        pthread_mutex_unlock(&mutex_lock);
     }
     pthread_exit(NULL);
 }
@@ -63,12 +63,12 @@ void *func_StdOutputHanler(void *infoPrecast)
 {
     while (1)
     {
-        pthread_mutex_lock(&lock); //lock critical section
+        pthread_mutex_lock(&mutex_lock); //lock critical section
         pthread_t ctid = pthread_self();
 
         while (condition_Var != 2)
         {
-            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released 
+            pthread_cond_wait(&pthread_condition, &mutex_lock); //wait for other threads send signal mutex and condition are released 
             sleep(2); // sleep to make sure this while loop catch the signal
         }
 
@@ -83,8 +83,8 @@ void *func_StdOutputHanler(void *infoPrecast)
         //change condition send signal release mutex lock 
         condition_Var = 3;
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
-        pthread_cond_signal(&condition);
-        pthread_mutex_unlock(&lock);
+        pthread_cond_signal(&pthread_condition);
+        pthread_mutex_unlock(&mutex_lock);
     }
     pthread_exit(NULL);
 }
@@ -93,12 +93,12 @@ void *func_FileStreamHander(void *infoPrecast)
 {
     while (1)
     {
-        pthread_mutex_lock(&lock); //lock critical section
+        pthread_mutex_lock(&mutex_lock); //lock critical section
         pthread_t ctid = pthread_self();  
 
         while (condition_Var != 3)
         {
-            pthread_cond_wait(&condition, &lock); //wait for other threads send signal mutex and condition are released
+            pthread_cond_wait(&pthread_condition, &mutex_lock); //wait for other threads send signal mutex and condition are released
             sleep(2); // sleep to make sure this while loop catch the signal
         }
 
@@ -127,8 +127,8 @@ void *func_FileStreamHander(void *infoPrecast)
         condition_Var = 1;
         printf ("###########Continue with other student infos###################\n"); 
         printf("~~~~~~~~~~~~Condition Var Value: %d~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", condition_Var);
-        pthread_cond_signal(&condition);
-        pthread_mutex_unlock(&lock);
+        pthread_cond_signal(&pthread_condition);
+        pthread_mutex_unlock(&mutex_lock);
     }
     pthread_exit(NULL);
 }
@@ -137,8 +137,8 @@ int main(void)
 {
     //init data 
     PersonalInfo VuInfo;
-
-    if (pthread_mutex_init(&lock, NULL) != 0)
+    
+    if (pthread_mutex_init(&mutex_lock, NULL) != 0)
     {
         printf("Mutex init failed\n");
         exit(1);
