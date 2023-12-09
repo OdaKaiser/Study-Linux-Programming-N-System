@@ -73,6 +73,7 @@ void *func_StdOutputHanler(void *infoPrecast)
         }
 
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
+        //thread 2 tasks    
         printf("This is thread 2 ID: %ld\n", ctid);
         printf("This is thread 2 is printing data to stdout... \n");
         printf("Your name is: %s\n", infoData->Name);
@@ -105,6 +106,7 @@ void *func_FileStreamHander(void *infoPrecast)
         PersonalInfo *infoData = (PersonalInfo*) infoPrecast;
         printf("This is thread 3 ID: %ld\n", ctid);
         printf("This is thread 3 is writing data to file...\n");
+        //thread 3 tasks
         int fileDescriptor = open(FILE_NAME, O_APPEND | O_CREAT | O_RDWR, 0666);
         if (fileDescriptor > -1)
         {
