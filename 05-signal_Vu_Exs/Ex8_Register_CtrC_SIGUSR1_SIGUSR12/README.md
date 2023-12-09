@@ -17,4 +17,4 @@ Author: Phan Tuan Vu
   - Register SIGUSR1 print he he he to stdout.
   - Register SIGUSR2 print hi hi hi to stdout.
 
-*Potential improvement : I'll write a shell script to automate the manual step.
+
