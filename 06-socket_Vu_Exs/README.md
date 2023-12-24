@@ -1,4 +1,4 @@
-This is README file for Ex8
+This is README file for Ex13
 Author: Phan Tuan Vu
 
 *Make usage:
