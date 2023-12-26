@@ -2,7 +2,7 @@ This is README file for Ex17
 Author: Phan Tuan Vu
 
 *Make usage:
-- make all : to build main.c to excutable files, remember the linking "-lrt" option
+- make all : to build main.c to excutable files, remember the linking "-lrt" option and -g option
 - make clean: remove all excutable files
 - run ./exec
 
