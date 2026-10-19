@@ -1,0 +1,3 @@
+class NumericalType implements Operands {
+
+}
